@@ -13,7 +13,7 @@ This program can also be viewed as a general framework for classifying video wit
 
 ####Dependencies
 
-`sudo apt install ffmpeg libopenblas-base libhdf5-serial-dev libgoogle-glog-dev` 
+`sudo apt install ffmpeg libopenblas-base libhdf5-serial-dev libgoogle-glog-dev libopencv-highgui2.4v5` 
 
 #####Additional 14.04 Dependencies
 
