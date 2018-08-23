@@ -1,5 +1,5 @@
 
-#Miles Deep - AI Porn Video Editor
+# Miles Deep - AI Porn Video Editor
 
 Using a deep convolutional neural network with residual connections, Miles Deep quickly classifies each second of a pornographic video into 6 categories based on sexual act with 95% accuracy. Then it uses that classification to automatically edit the video. It can remove all the scenes not containing sexual contact, or edit out just a specific act.
 
@@ -7,30 +7,30 @@ Unlike Yahoo's recently released [NSFW model](https://github.com/yahoo/open_nsfw
 
 This program can also be viewed as a general framework for classifying video with a [Caffe](http://caffe.berkeleyvision.org/) model, using batching and threading in C++. By replacing the weights, model definition, and mean file it can immediately be used to edit videos with other classes without recompiling. See below for an [example](https://github.com/ryanjay0/miles-deep#using-miles-deep-with-your-own-caffe-model).
 
-##Installation
+## Installation
 
-###Ubuntu Installation (16.04)
+### Ubuntu Installation (16.04)
 
-####Dependencies
+#### Dependencies
 
 `sudo apt install ffmpeg libopenblas-base libhdf5-serial-dev libgoogle-glog-dev libopencv-dev` 
 
-#####Additional 14.04 Dependencies
+##### Additional 14.04 Dependencies
 
 `sudo apt install libgflags-dev`
 
-#####CUDA (Recommended)
+##### CUDA (Recommended)
 For GPU usage you need an Nvidia GPU and CUDA 8.0 drivers. Highly recommended; increases speed 10x. This can be installed from a package or by downloading from [NVIDIA directly](https://developer.nvidia.com/cuda-downloads). 
 
 
-#####CuDNN (Optional)
+##### CuDNN (Optional)
 
 Additional drivers from NVIDIA that make the CUDA GPU support even faster.
 [Download here](https://developer.nvidia.com/cudnn). (Requires registration)
 
 
 
-####Download Miles Deep
+#### Download Miles Deep
 
 * [miles-deep (GPU + CuDNN)](https://github.com/ryanjay0/miles-deep/releases/download/v0.4/miles-deep-xxx.v0.4.tgz)
 * [miles-deep (GPU)](https://github.com/ryanjay0/miles-deep/releases/download/v0.4/miles-deep-gpu.v0.4.tgz)
@@ -45,10 +45,11 @@ GPU + CuDNN | 15s
 GPU | 19s
 CPU  | 1m 59s 
 *on a 24.5 minute video with a GTX 960 4GB
-###Windows and OSX
+
+### Windows and OSX
 I'm working on a version for Windows. Sorry, I don't have a Mac but it should run on OSX with few changes. [Compilations instructions](https://github.com/ryanjay0/miles-deep#compiling) below. I'll accept pull requests related to OSX or other linux compatibility. Windows will likely require anothe repository to link with Caffe for windows.
 
-##Usage
+## Usage
 
 Example:
 ```bash
@@ -78,7 +79,7 @@ outputs result in `/cut_movies/movie.cut.mkv`.
    **NOTE: Reduce the batch size if you run out of memory**
 
 
-####GPU VRAM used and runtime for various batch sizes:
+#### GPU VRAM used and runtime for various batch sizes:
 
 VRAM(GB)  |  batch\_size  |    run time
 ---:       | ---:           | ---:
@@ -93,7 +94,7 @@ Tested on an Nvidia GTX 960 with 4GB VRAM and a 24.5 minute video file. At batch
 
 In addition to batching, Miles Deep also uses threading, which allows the screenshots to be captured and processed while they are classified.
 
-###Auto-Tagging Without Cutting
+### Auto-Tagging Without Cutting
 
 Example:
 ```bash
@@ -114,14 +115,14 @@ label, start, end, score, coverage
 
 The file contains the cuts for each target, ordered as they occur in the movie. The first lines gives the movie name, the labels, the total movie time, and the total seconds for each label. Then for each cut it list the start time, end time, average score, and coverage. Because of the threshold and the gaps, these cuts may overlap and aren't guaranteed to cover every second.
 
-###Prediction Weights
+### Prediction Weights
 Here is an example of the predictions for each second of a video:
 
 ![predictions for each second of a video](images/prediction_weights.jpg?raw=true)
 
 
-###Using Miles Deep with your own Caffe model
-####Cat finding
+### Using Miles Deep with your own Caffe model
+#### Cat finding
 
 Here's an example of how to use the program with your own model (or a pre-trained one):
 
@@ -141,7 +142,7 @@ This finds the scenes in `movie.mp4` with a tabby cat and returns `movie.cut.mp4
 *Note: This example is just to show the syntax. It performs somewhat poorly in my experience, likely due to the 1000 classes. This program is ideally suited to models with a smaller number of categories with an 'other' category too.*
 
 
-##Model
+## Model
 
 The model is a CNN with [residual connections](https://arxiv.org/abs/1512.03385) created by [pynetbuilder](https://github.com/jay-mahadeokar/pynetbuilder/tree/master/models/imagenet). These models are pre-trained on ImageNet. Then the final layer is changed to fit the new number of classes and [fine-tuned](http://caffe.berkeleyvision.org/gathered/examples/finetune_flickr_style.html).
 
@@ -176,17 +177,17 @@ The results above were obtained with mirroring but not cropping. Using cropping 
 
 [Fine-tuning](https://www.tensorflow.org/versions/r0.9/how_tos/image_retraining/index.html) the Inception V3 model with Tensorflow also only achieved 80% accuracy. However, that is with a 299x299 image size instead of 224x224 with no mirroring or cropping, so the result is not directly comparable. Overfitting may be a problem with this model too.
 
-###Editing the Movie
+### Editing the Movie
 
 Given the predictions for a frame each second, it takes the argmax of those predictions and creates cut blocks of the movie where argmax equals the target and the score is greater than some threshold. The gap size, the minimum fraction of frames matching the target in each block, and the score threshold are all adjustable.
 
 FFmpeg supports a lot of codecs including: mp4, avi, flv, mkv, wmv, and many more.
 
-###Single Frame vs Multiple Frames
+### Single Frame vs Multiple Frames
 
 This model doesn't make use of any temporal information since it treats each image separately. *Karpathy et al* showed that other models which use multiple frames don't perform much better. They have difficulty dealing with camera movement. It would still be interesting to compare their slow fusion model with the results here.
 
-##Data
+## Data
 
 The training database consists of 36,000 (and 2500 test images) images divided into 6 categories: 
 
@@ -202,11 +203,11 @@ to 224x224 for data augmentation. A lot of the experiments were done without cro
 
 For now the dataset is limited to two heterosexual performers. But given the success of this method, I plan to expand the number of categories. Due to the nature of the material, I will not be releasing the database itself; only the trained model.
 
-####Sex back and front
+#### Sex back and front
 
 Sex front and back are defined by the position of the camera, instead of the orientation of the performers. If the female's body is facing the camera so the front of the vagina is shown, it's sex front. If the female's rear is shown instead, it's sex back. This creates two visually distinct classes. No distinction is made between vaginal and anal intercourse; sex back or sex front could include either.
 
-##Compiling
+## Compiling
 
 * Clone the git repository which includes Caffe as an external dependency. 
 
@@ -230,10 +231,10 @@ sudo ln -s libhdf5_serial_hl.so libhdf5_hl.so
 
 * `make` 
 
-#####License
+##### License
 Code licensed under GPLv3, including the trained model. Caffe is licensed under BSD 2. 
 
-####Contact
+#### Contact
 
 If you have problems, suggestions, or thoughts open an issue or send me email nipplerdeeplearning at gmail. 
  
